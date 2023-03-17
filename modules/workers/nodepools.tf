@@ -93,6 +93,14 @@ resource "oci_containerengine_node_pool" "workers" {
       condition     = coalesce(each.value.image_id, "none") != "none"
       error_message = "Missing image_id for pool ${each.key}. Check provided value for image_id if image_type is 'custom', or image_os/image_os_version if image_type is 'oke' or 'platform'."
     }
+
+    precondition {
+      condition = anytrue([
+        contains(["instance-pool", "cluster-network"], each.value.mode), # supported modes
+        length(lookup(each.value, "secondary_vnics", {})) == 0,          # unrestricted when empty/unset
+      ])
+      error_message = "Unsupported option for mode: '${each.value.mode}'; var: 'secondary_vnics'"
+    }
   }
 
   dynamic "initial_node_labels" {
