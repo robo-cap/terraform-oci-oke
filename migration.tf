@@ -49,3 +49,8 @@ moved {
   from = module.oke.oci_containerengine_node_pool.nodepools
   to   = module.workers[0].oci_containerengine_node_pool.workers
 }
+
+moved {
+  from = module.workers[0].oci_containerengine_node_pool.workers
+  to   = module.workers[0].oci_containerengine_node_pool.tfscaled_workers
+}
