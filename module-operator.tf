@@ -57,6 +57,7 @@ module "operator" {
   assign_dns                = var.assign_dns
   availability_domain       = coalesce(var.operator_availability_domain, lookup(local.ad_numbers_to_names, local.ad_numbers[0]))
   cloud_init                = var.operator_cloud_init
+  cluster_id                = one(module.cluster[*].cluster_id)
   image_id                  = local.operator_image_id
   install_cilium            = var.cilium_install
   install_helm              = var.operator_install_helm
@@ -95,6 +96,10 @@ module "operator" {
   depends_on = [
     module.iam,
   ]
+  
+  providers = {
+    oci.home = oci.home
+  }
 }
 
 output "operator_id" {

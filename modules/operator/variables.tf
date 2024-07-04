@@ -13,6 +13,7 @@ variable "bastion_user" { type = string }
 variable "assign_dns" { type = bool }
 variable "availability_domain" { type = string }
 variable "cloud_init" { type = list(map(string)) }
+variable "cluster_id" { type = string }
 variable "image_id" { type = string }
 variable "install_cilium" { type = bool }
 variable "install_helm" { type = bool }
