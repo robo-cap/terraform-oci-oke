@@ -3,7 +3,7 @@
 
 
 resource "oci_identity_policy" "operator_policy" {
-  count          = var.cluster_id != null ? 1 : 0
+  count          = var.create_cluster != null ? 1 : 0
   
   provider       = oci.home
 
