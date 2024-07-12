@@ -15,7 +15,7 @@ variable "availability_domain" { type = string }
 variable "cloud_init" { type = list(map(string)) }
 variable "cluster_id" { type = string }
 variable "create_cluster" { type = bool }
-variable "create_operator_policy_to_manage_cluster {
+variable "create_operator_policy_to_manage_cluster" {
   type    = bool
   default = false
 }
