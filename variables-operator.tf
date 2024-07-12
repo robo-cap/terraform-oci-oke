@@ -7,6 +7,12 @@ variable "create_operator" {
   type        = bool
 }
 
+variable "create_operator_policy_to_manage_cluster {
+  default     = true
+  description = "Whether to create minimal IAM policy to allow the operator host to manage the cluster."
+  type        = bool
+}
+
 variable "operator_availability_domain" {
   default     = null
   description = "The availability domain for FSS placement. Defaults to first available."
