@@ -25,6 +25,7 @@ locals {
         is_gpu      = length(regexall("GPU", v.source_name)) > 0
         os          = trimspace(replace(element(regexall("^[a-zA-Z-]+", v.source_name), 0), "-", " "))
         os_version  = element(regexall("[0-9\\.]+", v.source_name), 0)
+        sort_key    = replace(try(join(".", regex("-([0-9]{4}\\.[01][0-9].[0-9]{1,2}).*?-([0-9]+)$", v.source_name)), v.source_name), ".", "")
         source_name = v.source_name
       },
     )
