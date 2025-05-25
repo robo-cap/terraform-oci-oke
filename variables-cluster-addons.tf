@@ -4,7 +4,12 @@
 variable "cluster_addons" {
   description = "Map with cluster addons that should be enabled.  See <a href=https://docs.oracle.com/en-us/iaas/Content/ContEng/Tasks/contengconfiguringclusteraddons-configurationarguments.htm#contengconfiguringclusteraddons-supportedarguments>ClusterAddon documentation</a> for the supported configuration of each addon."
   type        = any
-  default     = {}
+  default     ={
+    "NvidiaGpuPlugin" = {
+      remove_addon_resources_on_delete = true
+      override_existing = true
+    }
+  }
 }
 
 variable "cluster_addons_to_remove" {

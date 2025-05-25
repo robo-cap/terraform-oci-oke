@@ -14,6 +14,12 @@ variable "await_cloudinit" { type = string }
 variable "assign_dns" { type = bool }
 variable "availability_domain" { type = string }
 variable "cloud_init" { type = list(map(string)) }
+variable "cluster_id" { type = string }
+variable "create_cluster" { type = bool }
+variable "create_operator_policy_to_manage_cluster" {
+  type    = bool
+  default = false
+}
 variable "image_id" { type = string }
 variable "install_cilium" { type = bool }
 variable "install_oci_cli_from_repo" { type = bool }
