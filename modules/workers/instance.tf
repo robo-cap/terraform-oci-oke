@@ -76,7 +76,7 @@ resource "oci_core_instance" "workers" {
     {
       apiserver_host           = var.apiserver_private_host
       cluster_ca_cert          = var.cluster_ca_cert
-      oke-k8version            = var.kubernetes_version
+      oke-k8version            = lookup(each.value, "kubernetes_version", var.kubernetes_version)
       oke-kubeproxy-proxy-mode = var.kubeproxy_mode
       oke-tenancy-id           = var.tenancy_id
       oke-initial-node-labels  = join(",", [for k, v in each.value.node_labels : format("%v=%v", k, v)])

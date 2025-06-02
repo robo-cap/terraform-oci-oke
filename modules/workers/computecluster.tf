@@ -29,7 +29,10 @@ resource "oci_core_compute_cluster" "shared" {
 # Dynamic resource block for Compute Cluster groups defined in worker_pools
 resource "oci_core_compute_cluster" "workers" {
   # Create an OCI Compute Cluster resource for each enabled entry of the worker_pools map with that mode.
-  for_each            = { for k, v in local.enabled_compute_clusters : k => v if length(lookup(v, "instance_ids", [])) > 0 && lookup(v, "compute_cluster", null) == null }
+  for_each            = merge(
+    { for k, v in local.enabled_compute_clusters : k => v if length(lookup(v, "instance_ids", [])) > 0 && lookup(v, "compute_cluster", null) == null },
+    { for k, v in local.enabled_gpu_memory_clusters : k => v if lookup(v, "compute_cluster", null) == null }
+  )
   compartment_id      = each.value.compartment_id
   display_name        = each.key
   defined_tags        = each.value.defined_tags
@@ -64,7 +67,7 @@ resource "oci_core_instance" "compute_cluster_workers" {
     oci_core_compute_cluster.shared[lookup(each.value, "compute_cluster", "")].id :
     (lookup(oci_core_compute_cluster.workers, element(split("###", each.key), 0), null) != null ?
       oci_core_compute_cluster.workers[element(split("###", each.key), 0)].id :
-      lookup(each.value, "compute_cluster", "")
+      lookup(each.value, "compute_cluster", null)
     )
   )
 

@@ -214,7 +214,7 @@ locals {
   # Enabled worker_pool map entries for instance pools
   enabled_instance_configs = {
     for k, v in local.enabled_worker_pools : k => v
-    if contains(["cluster-network", "instance-pool"], lookup(v, "mode", ""))
+    if contains(["cluster-network", "instance-pool", "gpu-memory-cluster"], lookup(v, "mode", ""))
   }
 
   # Enabled worker_pool map entries for instance pools
@@ -232,6 +232,11 @@ locals {
   # Enabled worker_pool map entries for cluster networks
   enabled_cluster_networks = {
     for k, v in local.enabled_worker_pools : k => v if lookup(v, "mode", "") == "cluster-network"
+  }
+
+  # Enabled worker_pool map entries for GPU memory clusters
+  enabled_gpu_memory_clusters = {
+    for k, v in local.enabled_worker_pools : k => v if lookup(v, "mode", "") == "gpu-memory-cluster"
   }
 
   # Enabled worker_pool map entries for compute clusters
@@ -256,11 +261,12 @@ locals {
   }
 
   # Maps of worker pool OCI resources by pool name enriched with desired/custom parameters for various modes
-  worker_node_pools         = { for k, v in merge(oci_containerengine_node_pool.tfscaled_workers, oci_containerengine_node_pool.autoscaled_workers) : k => merge(lookup(local.worker_pools_final, k, {}), v) }
-  worker_virtual_node_pools = { for k, v in oci_containerengine_virtual_node_pool.workers : k => merge(lookup(local.worker_pools_final, k, {}), v) }
-  worker_instance_pools     = { for k, v in merge(oci_core_instance_pool.tfscaled_workers, oci_core_instance_pool.autoscaled_workers) : k => merge(lookup(local.worker_pools_final, k, {}), v) }
-  worker_cluster_networks   = { for k, v in oci_core_cluster_network.workers : k => merge(lookup(local.worker_pools_final, k, {}), v) }
-  worker_instances          = { for k, v in oci_core_instance.workers : k => merge(lookup(local.worker_pools_final, k, {}), v) }
+  worker_node_pools          = { for k, v in merge(oci_containerengine_node_pool.tfscaled_workers, oci_containerengine_node_pool.autoscaled_workers) : k => merge(lookup(local.worker_pools_final, k, {}), v) }
+  worker_virtual_node_pools  = { for k, v in oci_containerengine_virtual_node_pool.workers : k => merge(lookup(local.worker_pools_final, k, {}), v) }
+  worker_instance_pools      = { for k, v in merge(oci_core_instance_pool.tfscaled_workers, oci_core_instance_pool.autoscaled_workers) : k => merge(lookup(local.worker_pools_final, k, {}), v) }
+  worker_cluster_networks    = { for k, v in oci_core_cluster_network.workers : k => merge(lookup(local.worker_pools_final, k, {}), v) }
+  worker_instances           = { for k, v in oci_core_instance.workers : k => merge(lookup(local.worker_pools_final, k, {}), v) }
+  worker_gpu_memory_clusters = { for k, v in oci_core_compute_gpu_memory_cluster.workers : k => merge(lookup(local.worker_pools_final, k, {}), v) }
 
   # Combined map of outputs by pool name for all modes excluding 'instance' (output separately)
   worker_pools_output = merge(
@@ -268,6 +274,7 @@ locals {
     local.worker_virtual_node_pools,
     local.worker_instance_pools,
     local.worker_cluster_networks,
+    local.worker_gpu_memory_clusters
   )
 
   # OCIDs of pool resources by pool name for modes: 'node-pool', 'virtual-node-pool', 'instance-pool', 'cluster-network'

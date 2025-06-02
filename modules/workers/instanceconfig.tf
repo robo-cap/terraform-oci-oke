@@ -26,7 +26,7 @@ resource "oci_core_instance_configuration" "workers" {
         }
       }
 
-      availability_domain = element(each.value.availability_domains, 1)
+      availability_domain = lookup(each.value, "placement_ad", null) != null ? lookup(var.ad_numbers_to_names, lookup(each.value, "placement_ad")) : element(each.value.availability_domains, 1)
 
       # First value specified on pool, or null to select automatically
       fault_domain = try(each.value.placement_fds[0], null)
@@ -54,7 +54,7 @@ resource "oci_core_instance_configuration" "workers" {
         {
           apiserver_host           = var.apiserver_private_host
           cluster_ca_cert          = var.cluster_ca_cert
-          oke-k8version            = var.kubernetes_version
+          oke-k8version            = lookup(each.value, "kubernetes_version", var.kubernetes_version)
           oke-kubeproxy-proxy-mode = var.kubeproxy_mode
           oke-tenancy-id           = var.tenancy_id
           oke-initial-node-labels  = join(",", [for k, v in each.value.node_labels : format("%v=%v", k, v)])
