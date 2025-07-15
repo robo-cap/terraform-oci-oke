@@ -135,6 +135,19 @@ locals {
         protocol = local.udp_protocol, port = local.fss_nfs_port_min, destination = local.fss_nsg_id, destination_type = local.rule_type_nsg,
       },
     } : {},
+
+    local.lustre_nsg_enabled ? {
+      # See ttps://docs.oracle.com/en-us/iaas/Content/lustre/security-rules.htm
+      # Ingress
+      "Allow TCP connection from LustreFS nodes" : {
+        protocol = local.tcp_protocol, source_port_min = local.lustre_port_min, source_port_max = local.lustre_port_max, port=local.lustre_lnet_port, source = local.lustre_nsg_id, source_type = local.rule_type_nsg,
+      },
+
+      # Egress
+      "Allow TCP connection to LustreFS nodes" : {
+        protocol = local.tcp_protocol, source_port_min = local.lustre_port_min, source_port_max = local.lustre_port_max, port = local.lustre_lnet_port, destination = local.lustre_nsg_id, destination_type = local.rule_type_nsg,
+      }
+    }: {},
     var.allow_rules_workers
   ) : {}
 }

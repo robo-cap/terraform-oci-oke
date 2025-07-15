@@ -14,6 +14,9 @@ locals {
   node_port_min           = 30000
   node_port_max           = 32767
   ssh_port                = 22
+  lustre_port_min         = 512
+  lustre_port_max         = 1023
+  lustre_lnet_port        = 988
 
   # Protocols
   # See https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml

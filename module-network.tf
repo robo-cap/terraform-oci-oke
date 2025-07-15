@@ -123,6 +123,8 @@ module "network" {
   allow_node_port_access       = var.allow_node_port_access
   allow_pod_internet_access    = var.allow_pod_internet_access
   allow_rules_cp               = var.allow_rules_cp
+  allow_rules_fss              = var.allow_rules_fss
+  allow_rules_lustre           = var.allow_rules_lustre
   allow_rules_internal_lb      = var.allow_rules_internal_lb
   allow_rules_pods             = var.allow_rules_pods
   allow_rules_public_lb        = var.allow_rules_public_lb
@@ -221,6 +223,12 @@ output "fss_subnet_id" {
 output "fss_subnet_cidr" {
   value = try(module.network.fss_subnet_cidr, null)
 }
+output "lustre_subnet_id" {
+  value = try(module.network.lustre_subnet_id, null)
+}
+output "lustre_subnet_cidr" {
+  value = try(module.network.lustre_subnet_cidr, null)
+}
 
 # NSGs
 output "bastion_nsg_id" {
@@ -254,6 +262,10 @@ output "pod_nsg_id" {
 output "fss_nsg_id" {
   description = "Network Security Group for File Storage Service resources."
   value       = try(module.network.fss_nsg_id, null)
+}
+output "lustre_nsg_id" {
+  description = "Network Security Group for Lustre FileSystem resources."
+  value       = try(module.network.lustre_nsg_id, null)
 }
 
 output "network_security_rules" {

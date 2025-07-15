@@ -226,10 +226,10 @@ variable "nsgs" {
   validation {
     condition = alltrue([
       for k, v in var.nsgs :
-      contains(["bastion", "operator", "cp", "int_lb", "pub_lb", "workers", "pods", "fss"], k)
+      contains(["bastion", "operator", "cp", "int_lb", "pub_lb", "workers", "pods", "fss", "lustre"], k)
     ])
     error_message = format("Invalid NSG keys: %s", jsonencode([for k, v in var.nsgs : k
-      if !contains(["bastion", "operator", "cp", "int_lb", "pub_lb", "workers", "pods", "fss"], k)
+      if !contains(["bastion", "operator", "cp", "int_lb", "pub_lb", "workers", "pods", "fss", "lustre"], k)
     ]))
   }
 }
@@ -285,6 +285,18 @@ variable "allow_bastion_cluster_access" {
 variable "allow_rules_cp" {
   default     = {}
   description = "A map of additional rules to allow traffic for the OKE control plane."
+  type        = any
+}
+
+variable "allow_rules_fss" {
+  default     = {}
+  description = "A map of additional rules to allow traffic for the FSS MT."
+  type        = any
+}
+
+variable "allow_rules_lustre" {
+  default     = {}
+  description = "A map of additional rules to allow traffic for the Lustre FS nodes."
   type        = any
 }
 

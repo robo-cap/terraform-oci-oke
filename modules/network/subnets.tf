@@ -81,6 +81,7 @@ locals {
     pods     = { create = var.create_cluster && var.cni_type == "npn", is_public = var.enable_ipv6 == true ? true : false }
     operator = { create = var.create_operator }
     fss      = { create = contains(keys(var.subnets), "fss") }
+    lustre   = { create = contains(keys(var.subnets), "lustre") }
     int_lb = {
       create         = var.create_cluster && contains(["both", "internal"], var.load_balancers),
       create_seclist = true, dns_label = "ilb",
@@ -283,4 +284,10 @@ output "fss_subnet_id" {
 }
 output "fss_subnet_cidr" {
   value = contains(keys(local.subnet_output), "fss") ? lookup(local.subnet_cidrs_all, "fss", null) : null
+}
+output "lustre_subnet_id" {
+  value = lookup(local.subnet_output, "lustre", null)
+}
+output "lustre_subnet_cidr" {
+  value = contains(keys(local.subnet_output), "lustre") ? lookup(local.subnet_cidrs_all, "lustre", null) : null
 }
