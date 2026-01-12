@@ -92,6 +92,14 @@ resource "oci_core_instance_configuration" "workers" {
         }
       }
 
+      dynamic "placement_constraint_details" {
+        for_each = each.value.compute_host_group_id != null ? [1] : []
+        content {
+          compute_host_group_id = each.value.compute_host_group_id
+          type                  = "HOST_GROUP"
+        }
+      }
+
       dynamic "platform_config" {
         for_each = each.value.platform_config != null ? [1] : []
         content {

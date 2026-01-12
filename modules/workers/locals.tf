@@ -31,6 +31,7 @@ locals {
     capacity_reservation_id        = var.capacity_reservation_id
     cloud_init                     = [] # empty pool-specific default
     compartment_id                 = var.compartment_id
+    compute_host_group_id          = null
     create                         = true
     disable_default_cloud_init     = var.disable_default_cloud_init
     drain                          = false
